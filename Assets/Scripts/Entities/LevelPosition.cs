@@ -15,7 +15,7 @@ namespace PEC3.Entities
         public int y;
         
         /// <value>Property <c>type</c> represents the type of the position.</value>
-        public string type;
+        public TileTypes.Type type;
         
         /// <summary>
         /// Method <c>LevelPosition</c> is the constructor of the class.
@@ -23,7 +23,7 @@ namespace PEC3.Entities
         /// <param name="x">The x-axis position.</param>
         /// <param name="y">The y-axis position.</param>
         /// <param name="type">The type of the position.</param>
-        public LevelPosition(int x, int y, string type)
+        public LevelPosition(int x, int y, TileTypes.Type type)
         {
             this.x = x;
             this.y = y;

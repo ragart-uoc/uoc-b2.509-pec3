@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Tilemaps;
+using PEC3.Managers;
 
 namespace PEC3.Controllers
 {
@@ -10,15 +10,6 @@ namespace PEC3.Controllers
     /// </summary>
     public class PlayerGridController : MonoBehaviour
     {
-        /// <value>Property <c>baseTilemap</c> represents the base tilemap.</value>
-        public Tilemap baseTilemap;
-        
-        /// <value>Property <c>wallTilemap</c> represents the wall tilemap.</value>
-        public Tilemap wallTilemap;
-        
-        /// <value>Property <c>boxTilemap</c> represents the box tilemap.</value>
-        public Tilemap boxTilemap;
-        
         /// <value>Property <c>moveSpeed</c> represents the player's movement speed.</value>
         public float moveSpeed = 8f;
 
@@ -28,7 +19,11 @@ namespace PEC3.Controllers
         /// <value>Property <c>_isMoving</c> represents the player's movement.</value>
         private bool _isMoving;
         
+        /// <value>Property <c>_lastMovement</c> represents the player's last movement.</value>
         private Vector2 _lastMovement = Vector2.zero;
+        
+        /// <value>Property <c>_gameManager</c> represents the game manager.</value>
+        private GameManager _gameManager;
 
         /// <value>Property <c>_animator</c> represents the player's animator.</value>
         private Animator _animator;
@@ -43,10 +38,13 @@ namespace PEC3.Controllers
         private static readonly int IsMoving = Animator.StringToHash("IsMoving");
         
         /// <summary>
-        /// Method <c>Start</c> is called every frame, if the MonoBehaviour is enabled.
+        /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.
         /// </summary>
         private void Start()
         {
+            // Get the game manager
+            _gameManager = GameManager.Instance;
+
             // Get the animator component
             _animator = GetComponent<Animator>();
         }
@@ -94,19 +92,19 @@ namespace PEC3.Controllers
             var newPosition = transform.position + new Vector3(movement.x, movement.y, 0f);
 
             // Get the grid coordinates of the new position
-            var newPositionGrid = baseTilemap.WorldToCell(newPosition);
+            var newPositionGrid = _gameManager.baseTilemap.WorldToCell(newPosition);
 
             // Check if the new position is inside the bounds
-            if (!baseTilemap.cellBounds.Contains(newPositionGrid))
+            if (!_gameManager.baseTilemap.cellBounds.Contains(newPositionGrid))
                 return;
 
             // Check if the new position contains a wall
-            var wallTile = wallTilemap.GetTile(newPositionGrid);
+            var wallTile = _gameManager.wallTilemap.GetTile(newPositionGrid);
             if (wallTile != null)
                 return;
             
             // If the new position contains a box, check if the box can be moved
-            var boxTile = boxTilemap.GetTile(newPositionGrid);
+            var boxTile = _gameManager.boxTilemap.GetTile(newPositionGrid);
             if (boxTile != null)
             {
                 // Calculate the new position of the box
@@ -116,24 +114,27 @@ namespace PEC3.Controllers
                     0);
                 
                 // Check if the new position of the box is inside the bounds
-                if (!baseTilemap.cellBounds.Contains(newBoxPosition))
+                if (!_gameManager.baseTilemap.cellBounds.Contains(newBoxPosition))
                     return;
                 
                 // Check if the new position of the box contains a wall or another box
-                var newBoxTile = boxTilemap.GetTile(newBoxPosition);
-                var newWallTile = wallTilemap.GetTile(newBoxPosition);
+                var newBoxTile = _gameManager.boxTilemap.GetTile(newBoxPosition);
+                var newWallTile = _gameManager.wallTilemap.GetTile(newBoxPosition);
                 if (newBoxTile != null || newWallTile != null)
                     return;
 
                 // Move the box to the new position
-                boxTilemap.SetTile(newBoxPosition, boxTilemap.GetTile(newPositionGrid));
-                boxTilemap.SetTile(newPositionGrid, null);
+                _gameManager.boxTilemap.SetTile(newBoxPosition, _gameManager.boxTilemap.GetTile(newPositionGrid));
+                _gameManager.boxTilemap.SetTile(newPositionGrid, null);
             }
 
             // Move the player to the new position
             _isMoving = true;
             var moveCoroutine = StartCoroutine(Move(transform, newPosition, moveSpeed));
-            StartCoroutine(MoveCooldown(1f / moveSpeed, moveCoroutine));
+            var coolDownRoutine = StartCoroutine(MoveCooldown(1f / moveSpeed, moveCoroutine));
+            if (_gameManager.CheckWinCondition())
+                enabled = false;
+            
         }
         
         /// <summary>
