@@ -40,7 +40,7 @@ namespace PEC3.Controllers
         private static readonly int InputY = Animator.StringToHash("InputY");
         
         /// <value>Property <c>IsMoving</c> represents the player's movement.</value>
-        private static readonly int IsMoving = Animator.StringToHash("isMoving");
+        private static readonly int IsMoving = Animator.StringToHash("IsMoving");
         
         /// <summary>
         /// Method <c>Start</c> is called every frame, if the MonoBehaviour is enabled.
