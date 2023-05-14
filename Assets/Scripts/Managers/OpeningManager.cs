@@ -10,11 +10,25 @@ namespace PEC3.Managers
     /// </summary>
     public class OpeningManager : MonoBehaviour
     {
+        /// <value>Property <c>Instance</c> represents the class instance.</value>
+        private static OpeningManager Instance;
+
         /// <value>Property <c>companyLogo</c> represents the UI element containing the company logo.</value>
         public TextMeshProUGUI companyLogo;
         
         /// <value>Property <c>companyMotto</c> represents the UI element containing the company motto.</value>
         public TextMeshProUGUI companyMotto;
+
+        /// <summary>
+        /// Method <c>Awake</c> is called when the script instance is being loaded.
+        /// </summary>
+        private void Awake()
+        {
+            if (Instance == null)
+                Instance = this;
+            else
+                Destroy(gameObject);
+        }
 
         /// <summary>
         /// Method <c>Start</c> is called on the frame when a script is enabled just before any of the Update methods are called the first time.

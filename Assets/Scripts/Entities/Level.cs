@@ -14,7 +14,7 @@ namespace PEC3.Entities
     {
         /// <value>Property <c>levelName</c> represents the level name.</value>
         [field : SerializeField]
-        public string LevelName { get; set; }
+        public string Name { get; set; }
 
         /// <value>Property <c>levelStructure</c> represents the level structure.</value>
         [field : SerializeField]
