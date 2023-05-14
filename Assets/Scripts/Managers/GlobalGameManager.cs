@@ -19,15 +19,15 @@ namespace PEC3.Managers
         /// <value>Property <c>mainMenuScene</c> represents the main menu scene name.</value>
         public string gameScene = "Game";
 
-        /// <value>Property <c>defaultLevels</c> represents the list of default levels.</value>
-        public List<string> defaultLevels = new List<string>();
+        /// <value>Property <c>DefaultLevels</c> represents the list of default levels.</value>
+        public readonly Dictionary<string, string> DefaultLevels = new Dictionary<string, string>();
         
-        /// <value>Property <c>customLevels</c> represents the list of default levels.</value>
-        public List<string> customLevels = new List<string>();
-        
-        /// <value>Property <c>levelPlayList</c> represents the list of levels to play.</value>
-        public List<string> levelPlayList = new List<string>();
-        
+        /// <value>Property <c>CustomLevels</c> represents the list of default levels.</value>
+        public readonly Dictionary<string, string> CustomLevels = new Dictionary<string, string>();
+
+        /// <value>Property <c>_levelPlayList</c> represents the list of levels to play.</value>
+        private readonly List<KeyValuePair<string, string>> _levelPlayList = new List<KeyValuePair<string, string>>();
+
         /// <value>Property <c>currentLevelIndex</c> represents the current level index.</value>
         public int currentLevelIndex;
         
@@ -68,9 +68,7 @@ namespace PEC3.Managers
             // Check levels in resources folder
             var levelMaps = Resources.LoadAll("Levels", typeof(TextAsset));
             foreach (var levelMap in levelMaps)
-            {
-                defaultLevels.Add(levelMap.name);
-            }
+                DefaultLevels.Add(levelMap.name, (levelMap as TextAsset)?.text);
         }
         
         /// <summary>
@@ -79,27 +77,17 @@ namespace PEC3.Managers
         private void GetCustomLevels()
         {
             // Check levels in persistent data path
-            var levelMaps = Directory.GetFiles(Application.persistentDataPath, "*.json");
+            var levelMaps = Directory.GetFiles(Application.persistentDataPath + "/Levels", "*.json");
             foreach (var levelMap in levelMaps)
-            {
-                customLevels.Add(levelMap);
-            }
+                CustomLevels.Add(Path.GetFileNameWithoutExtension(levelMap), File.ReadAllText(levelMap));
         }
         
         /// <summary>
         /// Method <c>AddLevelToPlayList</c> adds a level to the play list.
         /// </summary>
-        public void AddLevelToPlayList(string levelName)
+        public void AddLevelToPlayList(string levelName, bool custom = false)
         {
-            levelPlayList.Add(levelName);
-        }
-        
-        /// <summary>
-        /// Method <c>RemoveLevelFromPlayList</c> removes a level from the play list.
-        /// </summary>
-        public void RemoveLevelFromPlayList(string levelName)
-        {
-            levelPlayList.Remove(levelName);
+            _levelPlayList.Add(new KeyValuePair<string, string>(levelName, custom ? CustomLevels[levelName] : DefaultLevels[levelName]));
         }
         
         /// <summary>
@@ -107,16 +95,40 @@ namespace PEC3.Managers
         /// </summary>
         public void ClearLevelPlayList()
         {
-            levelPlayList.Clear();
+            _levelPlayList.Clear();
+        }
+        
+        /// <summary>
+        /// Method <c>IsLastLevel</c> checks if the current level is the last one.
+        /// </summary>
+        public bool IsLastLevel()
+        {
+            return currentLevelIndex == _levelPlayList.Count - 1;
         }
         
         /// <summary>
         /// Method <c>NextLevel</c> gets the next level.
         /// </summary>
-        public int NextLevel()
+        public string NextLevel()
         {
-            currentLevelIndex = (currentLevelIndex + 1) % levelPlayList.Count;
-            return currentLevelIndex;
+            currentLevelIndex = (currentLevelIndex + 1) % _levelPlayList.Count;
+            return _levelPlayList[currentLevelIndex].Value;
+        }
+        
+        /// <summary>
+        /// Method <c>GetCurrentLevelName</c> gets the current level name.
+        /// </summary>
+        public string GetCurrentLevelName()
+        {
+            return _levelPlayList[currentLevelIndex].Key;
+        }
+        
+        /// <summary>
+        /// Method <c>GetCurrentLevelContent</c> gets the current level content.
+        /// </summary>
+        public string GetCurrentLevelContent()
+        {
+            return _levelPlayList[currentLevelIndex].Value;
         }
 
         /// <summary>

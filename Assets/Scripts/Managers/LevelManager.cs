@@ -43,6 +43,9 @@ namespace PEC3.Managers
         
         /// <value>Property <c>playerPrefab</c> represents the player prefab.</value>
         public GameObject playerPrefab;
+        
+        /// <value>Property <c>player</c> represents the player.</value>
+        private GameObject _player;
 
         /// <value>Property <c>_goalPositions</c> represents the goal positions.</value>
         private Vector3Int[] _goalPositions = Array.Empty<Vector3Int>();
@@ -65,15 +68,18 @@ namespace PEC3.Managers
         {
             // Create a new level
             Level = new Level();
+            
+            // Get the player
+            _player = GameObject.FindGameObjectWithTag("Player");
         }
         
         /// <summary>
         /// Method <c>LoadLevel</c> loads the level.
         /// </summary>
-        /// <param name="levelMapPath">The path where the level map is located.</param>
-        public void LoadLevel(string levelMapPath)
+        /// <param name="levelMap">The JSON containing the level map.</param>
+        public void LoadLevel(string levelMap)
         {
-            Level.ImportLevelStructure(levelMapPath);
+            Level.ImportLevelStructure(levelMap);
         }
 
         /// <summary>
@@ -110,7 +116,7 @@ namespace PEC3.Managers
                         var worldPosition = baseTilemap.CellToWorld(positionVector);
                         worldPosition.x += 0.5f;
                         worldPosition.y += 0.5f;
-                        Instantiate(playerPrefab, worldPosition, Quaternion.identity);
+                        _player.transform.position = worldPosition;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

@@ -21,8 +21,6 @@ namespace PEC3.Controllers
         
         /// <value>Property <c>_lastMovement</c> represents the player's last movement.</value>
         private Vector2 _lastMovement = Vector2.zero;
-        
-        private LevelManager _levelManager;
 
         /// <value>Property <c>_animator</c> represents the player's animator.</value>
         private Animator _animator;
@@ -41,9 +39,6 @@ namespace PEC3.Controllers
         /// </summary>
         private void Start()
         {
-            // Get the level manager
-            _levelManager = LevelManager.Instance;
-
             // Get the animator component
             _animator = GetComponent<Animator>();
         }
@@ -91,19 +86,19 @@ namespace PEC3.Controllers
             var newPosition = transform.position + new Vector3(movement.x, movement.y, 0f);
 
             // Get the grid coordinates of the new position
-            var newPositionGrid = _levelManager.baseTilemap.WorldToCell(newPosition);
+            var newPositionGrid = LevelManager.Instance.baseTilemap.WorldToCell(newPosition);
 
             // Check if the new position is inside the bounds
-            if (!_levelManager.baseTilemap.cellBounds.Contains(newPositionGrid))
+            if (!LevelManager.Instance.baseTilemap.cellBounds.Contains(newPositionGrid))
                 return;
 
             // Check if the new position contains a wall
-            var wallTile = _levelManager.wallTilemap.GetTile(newPositionGrid);
+            var wallTile = LevelManager.Instance.wallTilemap.GetTile(newPositionGrid);
             if (wallTile != null)
                 return;
             
             // If the new position contains a box, check if the box can be moved
-            var boxTile = _levelManager.boxTilemap.GetTile(newPositionGrid);
+            var boxTile = LevelManager.Instance.boxTilemap.GetTile(newPositionGrid);
             if (boxTile != null)
             {
                 // Calculate the new position of the box
@@ -113,27 +108,25 @@ namespace PEC3.Controllers
                     0);
                 
                 // Check if the new position of the box is inside the bounds
-                if (!_levelManager.baseTilemap.cellBounds.Contains(newBoxPosition))
+                if (!LevelManager.Instance.baseTilemap.cellBounds.Contains(newBoxPosition))
                     return;
                 
                 // Check if the new position of the box contains a wall or another box
-                var newBoxTile = _levelManager.boxTilemap.GetTile(newBoxPosition);
-                var newWallTile = _levelManager.wallTilemap.GetTile(newBoxPosition);
+                var newBoxTile = LevelManager.Instance.boxTilemap.GetTile(newBoxPosition);
+                var newWallTile = LevelManager.Instance.wallTilemap.GetTile(newBoxPosition);
                 if (newBoxTile != null || newWallTile != null)
                     return;
 
                 // Move the box to the new position
-                _levelManager.boxTilemap.SetTile(newBoxPosition, _levelManager.boxTilemap.GetTile(newPositionGrid));
-                _levelManager.boxTilemap.SetTile(newPositionGrid, null);
+                LevelManager.Instance.boxTilemap.SetTile(newBoxPosition, LevelManager.Instance.boxTilemap.GetTile(newPositionGrid));
+                LevelManager.Instance.boxTilemap.SetTile(newPositionGrid, null);
             }
 
             // Move the player to the new position
             _isMoving = true;
             var moveCoroutine = StartCoroutine(Move(transform, newPosition, moveSpeed));
             var coolDownRoutine = StartCoroutine(MoveCooldown(1f / moveSpeed, moveCoroutine));
-            if (_levelManager.CheckWinCondition())
-                enabled = false;
-            
+            GameManager.Instance.MovePerformed();
         }
         
         /// <summary>

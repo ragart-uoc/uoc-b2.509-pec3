@@ -93,10 +93,9 @@ namespace PEC3.Entities
         /// <summary>
         /// Method <c>ImportLevelStructure</c> imports the level structure.
         /// </summary>
-        /// <param name="loadPath">The path to load the level structure.</param>
-        public void ImportLevelStructure(string loadPath)
+        /// <param name="json">The JSON to import.</param>
+        public void ImportLevelStructure(string json)
         {
-            var json = File.ReadAllText(loadPath);
             JsonUtility.FromJsonOverwrite(json, this);
         }
     }

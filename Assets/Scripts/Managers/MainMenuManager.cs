@@ -1,7 +1,7 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 namespace PEC3.Managers
 {
@@ -63,19 +63,19 @@ namespace PEC3.Managers
                 Destroy(child.gameObject);
             
             // Create the default level buttons
-            foreach (var level in GlobalGameManager.Instance.defaultLevels)
+            foreach (var level in GlobalGameManager.Instance.DefaultLevels)
             {
                 var levelButton = Instantiate(levelButtonPrefab, mainMenuDefaultLevels.transform);
-                levelButton.GetComponent<TextMeshProUGUI>().text = level;
-                levelButton.GetComponent<Button>().onClick.AddListener(() => PlayLevel(level));
+                levelButton.GetComponent<TextMeshProUGUI>().text = level.Key;
+                levelButton.GetComponent<Button>().onClick.AddListener(() => PlayLevel(level.Key));
             }
             
             // Create the custom level buttons
-            foreach (var level in GlobalGameManager.Instance.customLevels)
+            foreach (var level in GlobalGameManager.Instance.CustomLevels)
             {
                 var levelButton = Instantiate(levelButtonPrefab, mainMenuCustomLevels.transform);
-                levelButton.GetComponent<TextMeshProUGUI>().text = level;
-                levelButton.GetComponent<Button>().onClick.AddListener(() => PlayLevel(level));
+                levelButton.GetComponent<TextMeshProUGUI>().text = level.Key;
+                levelButton.GetComponent<Button>().onClick.AddListener(() => PlayLevel(level.Key, true));
             }
         }
         
@@ -84,7 +84,8 @@ namespace PEC3.Managers
         /// </summary>
         public void PlayDefaultLevels()
         {
-            GlobalGameManager.Instance.levelPlayList = GlobalGameManager.Instance.defaultLevels;
+            foreach (var level in GlobalGameManager.Instance.DefaultLevels)
+                GlobalGameManager.Instance.AddLevelToPlayList(level.Key);
             SceneManager.LoadScene(GlobalGameManager.Instance.GetCurrentThemeScenePath());
         }
         
@@ -101,10 +102,11 @@ namespace PEC3.Managers
         /// Method <c>PlayLevel</c> plays a particular level.
         /// </summary>
         /// <param name="levelName">The name of the level to play.</param>
-        public void PlayLevel(string levelName)
+        /// <param name="custom">Whether the level is custom or not.</param>
+        public void PlayLevel(string levelName, bool custom = false)
         {
             GlobalGameManager.Instance.ClearLevelPlayList();
-            GlobalGameManager.Instance.AddLevelToPlayList(levelName);
+            GlobalGameManager.Instance.AddLevelToPlayList(levelName, custom);
             SceneManager.LoadScene(GlobalGameManager.Instance.GetCurrentThemeScenePath());
         }
         
@@ -123,6 +125,14 @@ namespace PEC3.Managers
         private void ChangeThemeName()
         {
             mainMenuThemeSelect.text = GlobalGameManager.Instance.GetCurrentThemeName();
+        }
+        
+        /// <summary>
+        /// Method <c>HandleQuitGame</c> quits the game through the global game manager.
+        /// </summary>
+        public void HandleQuitGame()
+        {
+            GlobalGameManager.Instance.QuitGame();
         }
     }
 }
