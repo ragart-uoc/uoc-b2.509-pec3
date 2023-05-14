@@ -126,6 +126,14 @@ namespace PEC3.Managers
         {
             mainMenuThemeSelect.text = GlobalGameManager.Instance.GetCurrentThemeName();
         }
+
+        /// <summary>
+        /// Method <c>HandleEditor</c> loads the editor through the global game manager.
+        /// </summary>
+        public void HandleLoadEditor()
+        {
+            GlobalGameManager.Instance.LoadEditor();
+        }
         
         /// <summary>
         /// Method <c>HandleQuitGame</c> quits the game through the global game manager.

@@ -16,6 +16,9 @@ namespace PEC3.Managers
         /// <value>Property <c>mainMenuScene</c> represents the main menu scene name.</value>
         public string mainMenuScene = "MainMenu";
         
+        /// <value>Property <c>editorScene</c> represents the editor scene name.</value>
+        public string editorScene = "Editor";
+        
         /// <value>Property <c>mainMenuScene</c> represents the main menu scene name.</value>
         public string gameScene = "Game";
 
@@ -65,6 +68,9 @@ namespace PEC3.Managers
         /// </summary>
         private void GetDefaultLevels()
         {
+            // Clear default levels
+            DefaultLevels.Clear();
+
             // Check levels in resources folder
             var levelMaps = Resources.LoadAll("Levels", typeof(TextAsset));
             foreach (var levelMap in levelMaps)
@@ -74,8 +80,11 @@ namespace PEC3.Managers
         /// <summary>
         /// Method <c>GetCustomLevels</c> gets the custom levels.
         /// </summary>
-        private void GetCustomLevels()
+        public void GetCustomLevels()
         {
+            // Clear custom levels
+            CustomLevels.Clear();
+
             // Check levels in persistent data path
             var levelMaps = Directory.GetFiles(Application.persistentDataPath + "/Levels", "*.json");
             foreach (var levelMap in levelMaps)
@@ -181,6 +190,14 @@ namespace PEC3.Managers
         {
             Destroy(gameObject);
             SceneManager.LoadScene(mainMenuScene);
+        }
+        
+        /// <summary>
+        /// Method <c>LoadEditor</c> is used to load the editor.
+        /// </summary>
+        public void LoadEditor()
+        {
+            SceneManager.LoadScene(editorScene);
         }
         
         /// <summary>
