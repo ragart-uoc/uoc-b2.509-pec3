@@ -33,6 +33,9 @@ namespace PEC3.Managers
 
         /// <value>Property <c>_playerInput</c> represents the player input.</value>
         private PlayerInput _playerInput;
+        
+        /// <value>Property <c>audioSource</c> represents the audio source.</value>
+        public AudioSource audioSource;
 
         /// <summary>
         /// Method <c>Awake</c> is called when the script instance is being loaded.
@@ -116,6 +119,8 @@ namespace PEC3.Managers
         /// </summary>
         public void MovePerformed()
         {
+            // Perform the sound
+            audioSource.Play();
             // Update the moves
             _moves++;
             UpdateMoveCounter();
