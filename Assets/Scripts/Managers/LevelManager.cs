@@ -138,6 +138,9 @@ namespace PEC3.Managers
                 goalTilemap.SetTile(position, null);
                 boxTilemap.SetTile(position, null);
             }
+            
+            // Clear the goal positions
+            _goalPositions = Array.Empty<Vector3Int>();
         }
         
         /// <summary>
