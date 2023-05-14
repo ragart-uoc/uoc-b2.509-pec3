@@ -262,6 +262,7 @@ namespace PEC3.Managers
         public void HandleChangeName(string newName)
         {
             Name = newName;
+            Level.Name = newName;
         }
 
         /// <summary>
