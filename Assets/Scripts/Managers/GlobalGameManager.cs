@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
@@ -52,7 +53,6 @@ namespace PEC3.Managers
             DontDestroyOnLoad(gameObject);
             
             GetDefaultLevels();
-            GetThemes();
         }
 
         /// <summary>
@@ -141,9 +141,11 @@ namespace PEC3.Managers
         }
 
         /// <summary>
-        /// Method <c>GetThemes</c> gets a list of available themes.
+        /// Method <c>GetThemesFromDataPath</c> gets a list of available themes from data path.
         /// </summary>
-        private void GetThemes()
+        /// <remarks>Deprecated</remarks>
+        [Obsolete]
+        private void GetThemesFromDataPath()
         {
             // Add default theme first if exists
             if (Directory.Exists(Application.dataPath + "/Themes/Default"))
