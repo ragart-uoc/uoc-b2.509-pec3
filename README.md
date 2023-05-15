@@ -108,4 +108,3 @@ A efectos de reutilización, el nivel queda guardado en formato JSON en la ubica
 - "Unity: Highlight Tile in Tilemap on Mouseover" - Lukas Hermann [Entrada de blog] - https://lukashermann.dev/writing/unity-highlight-tile-in-tilemap-on-mousever/
 - "Unity - How to check if there is a Tile of an specific Tilemap in the position x,y,z" - user10259356 [StackOverflow] - https://stackoverflow.com/questions/51966194/unity-how-to-check-if-there-is-a-tile-of-an-specific-tilemap-in-the-position-x
 - "Unity tilemap WorldToCell returns floored world position" - Evg [StackExchange] - https://gamedev.stackexchange.com/questions/201010/unity-tilemap-worldtocell-returns-floored-world-position
-- 
